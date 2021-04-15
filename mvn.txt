@@ -1,0 +1,15 @@
+nohup java  -jar -Djasypt.encryptor.password=123456 gam-chat-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev &
+
+nohup java -jar -Djasypt.encryptor.password= gam-chat-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &
+
+mvn clean package -Dmaven.test.skip=true
+
+java -cp jasypt-1.9.3.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI password= algorithm=PBEWithMD5AndDES input=
+
+4985537907654784
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI0OTg1NTM3OTA3NjU0Nzg0IiwiY3JlYXRlZCI6MTYxNzAwMzE5NjUxNiwiZXhwIjoxNjMyNTU1MTk2fQ.95KDstsK4ax6RKkupfmEGuvWF2hNpgJ3zcKeBlFTFxTTlAatfuIBspSi3f74GaOQRI0RfC6guvlsN3ryZP_vUQ
+
+token2 Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyNjJAcXEuY29tIiwiY3JlYXRlZCI6MTYxMDg3ODA5ODU2NiwiZXhwIjoxNjI2NDMwMDk4fQ.XIKg93GVRSLHB1LVppsZsm3KxKegbqQNZE4HP23MM6j0DzRquK4xxsZ19q3dOlihmtdzX037IYyCquMKuw3lgQ
+
+4985537907654784
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI0OTg1NTM3OTA3NjU0Nzg0IiwiY3JlYXRlZCI6MTYxNjc2MzA5NzY2NCwiZXhwIjoxNjMyMzE1MDk3fQ.DyNh9p4L2zuxV6cJT--vsRDL2hLtlSCchyKNlP9ZXT4SWPhGFFM2u3E1se8ON2nrBg9w-Nm76CEQi1eTM9L6iA

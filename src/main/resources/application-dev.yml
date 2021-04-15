@@ -1,0 +1,38 @@
+spring:
+  # 数据库配置
+  datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+      url: jdbc:mysql://yhao-mysql.mysql.rds.aliyuncs.com:3306/gam-chat?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true
+      username: yhao
+      password: ENC(xS2vxIknJHjN0wBwiZH7iKhFDCvlp0Lb)
+
+#    username: root  #local
+#    password: 123456
+#    url: jdbc:mysql://localhost:3306/gam-chat?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    type: com.zaxxer.hikari.HikariDataSource
+
+  #redis
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+  mail:
+    host: smtp.qq.com
+    username: 1273543070@qq.com
+    password: kiyqfmjunaehggeh
+#    protocol: smtp
+    properties.mail.smtp.auth: true
+#    properties.mail.smtp.port: 465
+    properties.mail.smtp.ssl.trust: smtp.qq.com
+    properties.mail.smtp.socketFactory.port: 465
+    properties.mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+    properties.mail.display.sendmail: kinker
+    properties.mail.display.sendname: kinker
+    properties.mail.smtp.starttls.enable: true
+    properties.mail.smtp.starttls.required: true
+    properties.mail.smtp.ssl.enable: true
+    nickname: kinker
+    default-encoding: utf-8
+

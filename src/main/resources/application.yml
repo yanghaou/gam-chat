@@ -1,0 +1,86 @@
+#公共配置文件内容
+server:
+  port: 8080
+spring:
+  # jpa 配置
+  jpa:
+    # sql 打印
+    show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        # the Hibernate entity manager
+        globally_quoted_identifiers: true
+        # 格式化SQL输出
+        format_sql: false
+    hibernate:
+      # create, create-drop, update, validate
+      # 作用主要用于：自动创建、更新、验证数据库表结构
+      ddl-auto: update
+    database: mysql
+  #    generate-ddl: true
+
+  application:
+    name: gam-chat
+  profiles:
+    active: dev
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+
+
+
+#配置文件加密
+jasypt:
+  encryptor:
+    #秘钥
+    algorithm: PBEWithMD5AndDES
+    #设置密文前缀和后缀
+    property:
+      prefix: ENC(
+      suffix: )
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+
+
+qiniu:
+  domain: http://qqewem2sf.hd-bkt.clouddn.com
+
+
+#UUID 每天重启24*12次，可用34年
+# 初始时间, 默认:"2019-02-20"
+uid.epochStr: 2021-03-14
+# 时间位, 默认:30
+uid.timeBits: 30
+# 机器位, 默认:16
+uid.workerBits: 27
+# 序列号, 默认:7
+uid.seqBits: 6
+# 是否容忍时钟回拨, 默认:true
+uid.enableBackward: true
+# RingBuffer size扩容参数, 可提高UID生成的吞吐量, 默认:3
+uid.CachedUidGenerator.boostPower: 3
+# 指定何时向RingBuffer中填充UID, 取值为百分比(0, 100), 默认为50
+uid.CachedUidGenerator.paddingFactor: 50
+
+
+jwt:
+  tokenHeader: Authorization
+  secret: mySecret
+  expiration: 15552000
+  tokenHead: Bearer
+  usernameHead: UserId
+  appTypeHead: AppType
+  clientTypeHead: ClientType
+
+#验证码
+verify:
+  code:
+    validTime: 10
+    prefix: verify_code_user_
+
+#腾讯IM
+im:
+  #过期时间,单位秒
+  expire: 15552000
+  sdkappid: ENC(BoioKdOnGs3WRxa3y2DswOELsaIFW7ur)
+  key: ENC(1mvCScdkyez+0BuArC+trmloh1/ai3FwZfml6+Ii2FpifFsBsVWMNX8oOyohErwICz6Dx7h4LKMMkAfuNA1OwPaoySQj3t9zlhNALwScYAQ=)
