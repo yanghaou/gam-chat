@@ -40,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -89,6 +90,8 @@ public class UserService extends BaseService{
     Long adminRoleId;
     @Autowired
     UserRoleRepository userRoleRepository;
+    @Autowired
+    NoticeService noticeService;
 
     public Set<Permission> getPermissionList(Long uid) {
         Set<Permission> permissions = new HashSet<>();
@@ -264,8 +267,9 @@ public class UserService extends BaseService{
             userExtraRepository.save(userExtra);
         }
 
-        //TODO 用户信息保存完成后，给管理员发送审核信息
-
+        // 用户信息保存完成后，给管理员发送审核信息
+        List<Long> adminUid = userRoleRepository.findByRoleIdAndIsDel(adminRoleId, NOT_DEL);
+        sendImUserMsg(getImIdsByUid(adminUid),"uid:"+account.getUid()+" update user detail , please verify");
     }
 
     public void sendCode(String email) {
@@ -445,7 +449,6 @@ public class UserService extends BaseService{
 
     @Transactional
     public void verifyUserDetail(UserDetailVerifyVO vo) {
-        //todo 如果用户是管理员才能审核
         if (!isAdmin(getCommonHeader().getUid())){
             throw new ResultException(USER_NOT_ADMIN_EX);
         }
@@ -477,7 +480,9 @@ public class UserService extends BaseService{
         Integer accountStatus = vo.getStatus() == VERIFY_PASS?ACCOUNT_STATUS_PASS:ACCOUNT_STATUS_NOT_PASS;
         userAccountRepository.updateStatus(vo.getVerifyUid(),NOT_DEL,accountStatus, vo.getReason());
         if (vo.getStatus() == VERIFY_NOT_PASS){
-            //TODO 通知审核不通过
+            UserAccount userAccount = userAccountRepository.findByUidAndIsDel(vo.getVerifyUid(),NOT_DEL);
+            StringBuilder toAccount = new StringBuilder().append("im_").append(userAccount.getUid()).append("_").append(userAccount.getUsername());
+            sendImUserMsg(Arrays.asList(toAccount),"Your account is frozen, Please contact the administrator to unfreeze");
         }
     }
 
@@ -491,7 +496,10 @@ public class UserService extends BaseService{
             userExtra.setAboutMatchStatus(VERIFY_PASS_STATUS);
         }else {
             userExtra.setAboutMatchStatus(VERIFY_NOT_PASS_STATUS);
-            //TODO 通知审核不通过
+            UserAccount userAccount = userAccountRepository.findByUidAndIsDel(vo.getVerifyUid(),NOT_DEL);
+            StringBuilder toAccount = new StringBuilder().append("im_").append(userAccount.getUid()).append("_").append(userAccount.getUsername());
+            sendImUserMsg(Arrays.asList(toAccount),"Your AboutMatch is illegal, please re-write");
+
         }
         userExtra.setAboutMeReason(vo.getReason());
         userExtraRepository.save(userExtra);
@@ -506,7 +514,10 @@ public class UserService extends BaseService{
             userExtra.setAboutMeStatus(VERIFY_PASS_STATUS);
         }else {
             userExtra.setAboutMeStatus(VERIFY_NOT_PASS_STATUS);
-            //TODO 通知审核不通过
+
+            UserAccount userAccount = userAccountRepository.findByUidAndIsDel(vo.getVerifyUid(),NOT_DEL);
+            StringBuilder toAccount = new StringBuilder().append("im_").append(userAccount.getUid()).append("_").append(userAccount.getUsername());
+            sendImUserMsg(Arrays.asList(toAccount),"Your AboutMe is illegal, please re-write");
         }
         userExtra.setAboutMeReason(vo.getReason());
         userExtraRepository.save(userExtra);
@@ -529,10 +540,37 @@ public class UserService extends BaseService{
             userBase.setAvatarStatus(VERIFY_NOT_PASS_STATUS);
             //头像审核不通过，需要更新账号状态为审批不通过
             userAccountRepository.updateStatus(vo.getVerifyUid(),NOT_DEL,ACCOUNT_STATUS_NOT_PASS,"");
-            //TODO 通知头像审核不通过
+            StringBuilder toAccount = new StringBuilder().append("im_").append(userBase.getUid()).append("_").append(userBase.getUsername());
+            sendImUserMsg(Arrays.asList(toAccount),"Your avatar is illegal, please re-upload");
         }
         userBaseRepository.save(userBase);
 
+    }
+
+    /**
+     * [
+     *         {
+     *             "MsgType": "TIMTextElem",
+     *             "MsgContent": {
+     *                 "Text": "hi, beauty"
+     *             }
+     *         }
+     *     ]
+     * @param msg
+     */
+    public void sendImUserMsg(List toAccount,String msg){
+        List list = Arrays.asList(getNoticeMsg(msg));
+        Callable<Integer> callable = () -> noticeService.adminSendVerifyNotice(Arrays.asList(toAccount),list);
+        AsyncTaskExecutor.submit(callable);
+    }
+
+    public Map getNoticeMsg(String msg){
+        Map map = new HashMap();
+        map.put("MsgType","TIMTextElem");
+        Map mg = new HashMap();
+        mg.put("Text",msg);
+        map.put("MsgContent",mg);
+        return map;
     }
 
     @Transactional
@@ -553,8 +591,26 @@ public class UserService extends BaseService{
         userPicRepository.updateStatusByIdsIn(passIds, VERIFY_PASS_STATUS);
         userPicRepository.updateStatusByIdsIn(notPassIds, VERIFY_NOT_PASS_STATUS);
 
-        //TODO 审核不通过的需要通知用户
+        if (notPassIds.size()>0){
+            //查询未审核通过上传图片的用户
+            List<Long> notPassUids = userPicRepository.findUidByIdInAndIsDel(notPassIds, NOT_DEL);
+            List<String> toAccounts = getImIdsByUid(notPassUids);
+            sendImUserMsg(toAccounts,"Your AboutMe is illegal, please re-write");
+
+        }
     }
+
+    /**
+     * 根据指定UID查询imId
+     * @param uids
+     * @return
+     */
+    public List<String> getImIdsByUid(List<Long> uids){
+        List<UserAccount> userAccounts = userAccountRepository.findUidAndUsernameByUidAndIsDel(uids,NOT_DEL);
+        List<String> toAccounts = userAccounts.stream().map(s->"im_"+s.getUid()+"_"+s.getUsername()).collect(Collectors.toList());
+        return toAccounts;
+    }
+
 
     public boolean isAdmin(Long uid){
         List<Long> roleIds = getUserRoleIdList(uid);

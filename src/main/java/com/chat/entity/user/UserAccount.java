@@ -20,6 +20,12 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class UserAccount {
+
+    public UserAccount(Long uid, String username) {
+        this.uid = uid;
+        this.username = username;
+    }
+
     //用户唯一id
     @Id
     private Long uid;

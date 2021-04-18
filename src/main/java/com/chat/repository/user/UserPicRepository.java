@@ -21,6 +21,9 @@ public interface UserPicRepository extends JpaRepository<UserPic, Long>, JpaSpec
 
     List<UserPic> findByIdInAndIsDel(List<Long> picId, int notDel);
 
+    @Query(value="select distinct uid from user_pic where id in ?1 and is_del =?2", nativeQuery = true)
+    List<Long> findUidByIdInAndIsDel(List<Long> picId, int notDel);
+
     @Modifying
     @Transactional
     @Query(value="update user_pic set verify_status = ?2 where id in ?1", nativeQuery = true)

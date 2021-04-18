@@ -31,4 +31,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>,
 
     @Query(value = "select uid from user_account where app_type =?1 and is_del= ?2",nativeQuery = true)
     List<Long> findByAppTypeAndIsDel(String appType, int notDel);
+
+    @Query("select new UserAccount(uid,username) from UserAccount where uid in ?1 and isDel=?2")
+    List<UserAccount> findUidAndUsernameByUidAndIsDel(List<Long> uids, Integer isDel);
 }

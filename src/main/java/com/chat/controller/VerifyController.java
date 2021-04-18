@@ -24,8 +24,8 @@ public class VerifyController extends BaseController{
 
     @ApiOperation(value = "查询所有待审核头像")
     @GetMapping("/verify/user/avatar/list")
-    public CommonResult<PageView<UserAvatarItemVO>> getAvatarList(@RequestParam(defaultValue = "1") Integer page,
-                                                                  @RequestParam(defaultValue = "200") Integer pageSize,
+    public CommonResult<PageView<UserAvatarItemVO>> getAvatarList(@RequestParam(defaultValue = "1",required = false) Integer page,
+                                                                  @RequestParam(defaultValue = "200",required = false) Integer pageSize,
                                                                   @RequestParam Integer gender,
                                                                   @RequestParam String appType
                                                                   ){
@@ -35,8 +35,8 @@ public class VerifyController extends BaseController{
 
     @ApiOperation(value = "查询所有待审核的About信息")
     @GetMapping("/verify/user/about/list")
-    public CommonResult<PageView<UserAboutItemVO>> getAboutList(@RequestParam(defaultValue = "1") Integer page,
-                                                                @RequestParam(defaultValue = "200") Integer pageSize,
+    public CommonResult<PageView<UserAboutItemVO>> getAboutList(@RequestParam(defaultValue = "1",required = false) Integer page,
+                                                                @RequestParam(defaultValue = "200",required = false) Integer pageSize,
                                                                 @ApiParam("1=aboutMe, 2=aboutMatch") @RequestParam Integer type
     ){
         PageView<UserAboutItemVO> pageView = userService.getVerifyAboutList(page,pageSize,type);
@@ -45,8 +45,8 @@ public class VerifyController extends BaseController{
 
     @ApiOperation(value = "查询所有待审核的相册")
     @GetMapping("/verify/user/pic/list")
-    public CommonResult<PageView<UserPicItemVO>> getPicList(@RequestParam(defaultValue = "1") Integer page,
-                                                            @RequestParam(defaultValue = "200") Integer pageSize,
+    public CommonResult<PageView<UserPicItemVO>> getPicList(@RequestParam(defaultValue = "1",required = false) Integer page,
+                                                            @RequestParam(defaultValue = "200",required = false) Integer pageSize,
                                                             @RequestParam String appType){
         PageView<UserPicItemVO> pageView = userService.getVerifyPicList(appType,page,pageSize);
         return CommonResult.success(pageView);
@@ -78,8 +78,8 @@ public class VerifyController extends BaseController{
 
     @ApiOperation(value = "查询所有待审核的动态和评论信息")
     @GetMapping("/verify/moment/list")
-    public CommonResult<PageView<MomentItemVerifyVO>> getMomentList(@RequestParam(defaultValue = "1") Integer page,
-                                                                    @RequestParam(defaultValue = "200") Integer pageSize,
+    public CommonResult<PageView<MomentItemVerifyVO>> getMomentList(@RequestParam(defaultValue = "1",required = false) Integer page,
+                                                                    @RequestParam(defaultValue = "200",required = false) Integer pageSize,
                                                                     @ApiParam("1=动态, 2=评论") @RequestParam Integer type
     ){
         PageView<MomentItemVerifyVO> pageView = momentService.getVerifyMomentList(page,pageSize,type);

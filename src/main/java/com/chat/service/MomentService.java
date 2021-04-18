@@ -300,7 +300,7 @@ public class MomentService extends BaseService{
                 momentCommentRepository.updateStatus(commentsNotPass, VERIFY_NOT_PASS_STATUS);
             }
 
-            //TODO 审核不通过的需要通知用户
+            // 审核不通过的需要通知用户
 
         }
     }
@@ -319,6 +319,7 @@ public class MomentService extends BaseService{
             }
 
             //TODO 审核不通过的需要通知用户
+
 
 
         }

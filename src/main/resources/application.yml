@@ -84,3 +84,7 @@ im:
   expire: 15552000
   sdkappid: ENC(BoioKdOnGs3WRxa3y2DswOELsaIFW7ur)
   key: ENC(1mvCScdkyez+0BuArC+trmloh1/ai3FwZfml6+Ii2FpifFsBsVWMNX8oOyohErwICz6Dx7h4LKMMkAfuNA1OwPaoySQj3t9zlhNALwScYAQ=)
+  admin: administrator
+  #系统管理员单发消息给im用户
+  toOne: https://console.tim.qq.com/v4/openim/sendmsg
+  toBatch: https://console.tim.qq.com/v4/openim/batchsendmsg
