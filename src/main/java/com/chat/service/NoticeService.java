@@ -57,7 +57,8 @@ public class NoticeService {
                 .append("sdkappid=").append(sdkappid).append("&")
                 .append("random=").append(RandomUtil.randomNumber()).append("&")
                 .append("identifier=").append(imAdmin).append("&")
-                .append("usersig=").append(sig);
+                .append("usersig=").append(sig).append("&")
+                .append("contenttype=json");
 
         Map m = Maps.newHashMap();
         m.put("SyncOtherMachine",2);
@@ -65,7 +66,7 @@ public class NoticeService {
         m.put("MsgRandom",RandomUtil.randomNumber());
         m.put("MsgBody",msg);
         try {
-            String response = HttpUtil.post(url.toString(),m,5000);
+            String response = HttpUtil.post(url.toString(),JSONObject.toJSONString(m),5000);
             if (response != null) {
                 JSONObject jsonObject = JSONObject.parseObject(response);
                 String status = jsonObject.getString("ActionStatus");

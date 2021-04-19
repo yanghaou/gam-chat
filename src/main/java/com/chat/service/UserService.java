@@ -560,7 +560,7 @@ public class UserService extends BaseService{
      */
     public void sendImUserMsg(List toAccount,String msg){
         List list = Arrays.asList(getNoticeMsg(msg));
-        Callable<Integer> callable = () -> noticeService.adminSendVerifyNotice(Arrays.asList(toAccount),list);
+        Callable<Integer> callable = () -> noticeService.adminSendVerifyNotice(toAccount,list);
         AsyncTaskExecutor.submit(callable);
     }
 
@@ -595,7 +595,7 @@ public class UserService extends BaseService{
             //查询未审核通过上传图片的用户
             List<Long> notPassUids = userPicRepository.findUidByIdInAndIsDel(notPassIds, NOT_DEL);
             List<String> toAccounts = getImIdsByUid(notPassUids);
-            sendImUserMsg(toAccounts,"Your AboutMe is illegal, please re-write");
+            sendImUserMsg(toAccounts,"Your album contains illegal information and has been removed");
 
         }
     }
